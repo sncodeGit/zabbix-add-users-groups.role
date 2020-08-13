@@ -1,0 +1,11 @@
+---
+
+- include_tasks: get_api_token.yml
+
+- include_tasks: add_group.yml
+  when: zbx_us_groups_list is defined
+  loop: "{{ zbx_us_groups_list }}"
+
+- include_tasks: add_user.yml
+  when: zbx_us_users_list is defined
+  loop: "{{ zbx_us_users_list }}"

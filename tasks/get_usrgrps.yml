@@ -1,0 +1,19 @@
+---
+
+- name: Get usrgrps by Zabbix API | user
+  uri:
+    url: "{{ zabbix_api_url }}"
+    body: '{
+              "jsonrpc":"2.0",
+              "method":"usergroup.get",
+              "params":{
+                "output": "groupid",
+                "filter": {
+                  "name": {{ item.user_groups }}
+                }
+              },
+              "auth":"{{ zabbix_api_token.json.result }}",
+              "id":7
+          }'
+    body_format: json
+  register: zbx_us_users_groupids

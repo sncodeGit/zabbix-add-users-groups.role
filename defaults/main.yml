@@ -1,0 +1,9 @@
+---
+# defaults file for zabbix-users.role
+
+zabbix_api_url: ''      # URL до Zabbix API
+zabbix_api_user: ''     # Имя пользователя для подключения к Zabbix API
+zabbix_api_password: '' # Пароль пользователя Zabbix API
+
+zbx_us_groups_list: [] # Список групп пользователей, которых нужно добавить
+zbx_us_users_list: [] # Список пользователей, которых нужно добавить

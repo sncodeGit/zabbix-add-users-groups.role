@@ -1,0 +1,37 @@
+---
+
+- include_tasks: get_userids.yml
+  when: item.group_users_aliases is defined
+
+- name: Creating an empty list of userids | group
+  set_fact:
+    zbx_us_users_ids: "[]"
+  when: item.group_users_aliases is not defined
+
+- include_tasks: get_groupids.yml
+  when: item.group_hosts_groups is defined
+
+- name: Creating an empty list of groupids | group
+  set_fact:
+    zbx_us_hosts_groupids: "[]"
+  when: item.group_hosts_groups is not defined
+
+- name: Add zabbix group
+  uri:
+    url: "{{ zabbix_api_url }}"
+    body: '{
+              "jsonrpc":"2.0",
+              "method":"usergroup.create",
+              "params":{
+                "name":"{{ item.group_name }}",
+                "debug_mode":"{{ item.group_debug_mode }}",
+                "debug_mode":"{{ item.group_debug_mode }}",
+                "gui_access":"{{ item.group_gui_access }}",
+                "users_status":"{{ item.group_users_status }}",
+                "userids": {{ zbx_us_users_ids }},
+                "rights": {{ zbx_us_hosts_groupids }}
+                },
+              "auth":"{{ zabbix_api_token.json.result }}",
+              "id":7
+          }'
+    body_format: json

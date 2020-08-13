@@ -1,0 +1,23 @@
+---
+
+- name: Get userids by Zabbix API | group
+  uri:
+    url: "{{ zabbix_api_url }}"
+    body: '{
+              "jsonrpc":"2.0",
+              "method":"user.get",
+              "params":{
+                "output": "userid",
+                "filter": {
+                  "alias": {{ item.group_users_aliases }}
+                }
+              },
+              "auth":"{{ zabbix_api_token.json.result }}",
+              "id":7
+          }'
+    body_format: json
+  register: zbx_us_users_ids
+
+- name: Parse Zabbix API answer (with userids) | group
+  set_fact:
+    zbx_us_users_ids: "{{ zbx_us_users_ids.json.result | map(attribute='userid') | list }}"

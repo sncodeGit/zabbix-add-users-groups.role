@@ -1,0 +1,22 @@
+---
+
+- include_tasks: get_usrgrps.yml
+
+- name: Add zabbix user
+  uri:
+    url: "{{ zabbix_api_url }}"
+    body: '{
+              "jsonrpc":"2.0",
+              "method":"user.create",
+              "params":{
+                "alias":"{{ item.user_alias }}",
+                "passwd":"{{ item.user_pass }}",
+                "name":"{{ item.user_name }}",
+                "surname":"{{ item.user_surname }}",
+                "type":"{{ item.user_type }}",
+                "usrgrps": {{ zbx_us_users_groupids.json.result }}
+              },
+              "auth":"{{ zabbix_api_token.json.result }}",
+              "id":7
+          }'
+    body_format: json

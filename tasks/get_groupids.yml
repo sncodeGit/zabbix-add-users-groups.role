@@ -1,0 +1,28 @@
+---
+
+- name: Get groupids of hosts groups by Zabbix API | group
+  uri:
+    url: "{{ zabbix_api_url }}"
+    body: '{
+              "jsonrpc":"2.0",
+              "method":"hostgroup.get",
+              "params":{
+                "output": ["groupid", "name"],
+                "filter": {
+                  "name": {{ item.group_hosts_groups | map(attribute="name") | list }}
+                }
+              },
+              "auth":"{{ zabbix_api_token.json.result }}",
+              "id":7
+          }'
+    body_format: json
+  register: zbx_us_hosts_groupids
+
+- name: Parse Zabbix API answer (with userids) | group
+  set_fact:
+    zbx_us_hosts_groupids: |
+      {{
+        (zbx_us_hosts_groupids.json.result, item.group_hosts_groups) |
+        flatten | groupby('name') | flatten(levels=1) | json_query('[1::2]') |
+        json_query('[*].{id: [].groupid | [0], permission: [].permission | [0]}')
+      }}
